@@ -1,11 +1,15 @@
+/** Main class for my board. Includes all the setup for the board in the constructor,
+ *  and adds calls to its methods in the DOM using 'onclick' for each div
+ * 
+ */
 class grid {
   constructor(id) {
     this.id = id;
-    this.id.appendChild(document.createElement("div"));
+    this.id.appendChild(document.createElement("div")); // Add the 16th 'empty' tile
     this.tiles = id.getElementsByTagName("div");
     this.tileNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     let count = 1;
-    for (let tile of this.tiles) {
+    for (let tile of this.tiles) { // Go through each div and add an id and onclick method to it.
       let tileId = "T" + count.toString();
       tile.id = tileId;
       tile.onclick = function () {
@@ -38,7 +42,7 @@ class grid {
       if (this.isBlankNeighbor(tile.id)) {
         // If a tile is now neighboring the blank tile, make it hoverable
         tile.classList.add("hoverable");
-      } else {
+      } else { // Otherwise, remove the existing hoverable class, if any
         tile.classList.remove("hoverable");
       }
       count++;
@@ -52,11 +56,11 @@ class grid {
    * @param {string} id
    */
   swapTile = function (id) {
-    let tilei = this.findTile(id);
-    let blanki = this.findTile("T16");
-    let temp = this.tileNums[tilei];
-    this.tileNums[tilei] = this.tileNums[blanki];
-    this.tileNums[blanki] = temp;
+    let tilei = this.findTile(id); // Find the position of the tile to swap
+    let blanki = this.findTile("T16"); // Find the position of the blank tile
+    let temp = this.tileNums[tilei]; // Store the swap tile in a temp var
+    this.tileNums[tilei] = this.tileNums[blanki]; // Swap the chosen tile with the blank tile
+    this.tileNums[blanki] = temp; // Swap the blank tile with the stored temp var
   };
 
   /** Check if a tile is adjacent to the blank tile, T16
@@ -66,7 +70,7 @@ class grid {
    */
   isBlankNeighbor = function (id) {
     let tilei = this.findTile(id);
-    if (
+    if ( // Check all 4 possible positions to the left, right, above, and below
       this.tileNums[tilei + 1] == 16 ||
       this.tileNums[tilei - 1] == 16 ||
       this.tileNums[tilei + 4] == 16 ||
@@ -80,7 +84,7 @@ class grid {
   /** Searches the list of tileNums to find the position of the tile inputted
    *
    * @param {string} id
-   * @returns
+   * @returns - the index where it found the tile number or -1 otherwise
    */
   findTile(id) {
     for (let i = 0; i < this.tileNums.length; i++) {
@@ -91,6 +95,10 @@ class grid {
     return -1;
   }
 
+  /** Function to shuffle the board, only making valid moves
+   * 
+   * @param {int} amount - number of moves to make
+   */
   async shuffle(amount) {
     for (let i = 0; i < amount; i++) {
       let possibleMoves = document.getElementsByClassName("hoverable");
@@ -98,6 +106,11 @@ class grid {
       await this.sleep(10);
     }
   }
+  /** Function to pause and wait for a specified number of milliseconds
+   * 
+   * @param {int} ms - number of milliseconds
+   * @returns - a promise after the specified timeout
+   */
   sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -108,17 +121,16 @@ class grid {
  *  Trying to use a class method in the onclick was incredibly complex and confusing, so I 
  *  got advice from Josiah Kangas to use this outside method to call my class methods.
  * 
- * @param {string} id 
+ * @param {string} id - the id of the tile clicked on
  */
 function update(id) {
   board.updateBoard(id);
 }
-
-
+ 
 let board;
 window.onload = () => {
   let button = document.getElementById("shufflebutton");
   board = new grid(document.getElementById("puzzlearea"));
-  board.updateBoard("0");
-  button.onclick = function () { board.shuffle(1000) };
+  board.updateBoard("0"); // This is to add the hoverable class to the two necessary tiles 12 and 15 on refresh
+  button.onclick = function () { board.shuffle(300) };
 };

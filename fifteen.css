@@ -62,8 +62,5 @@ div {
     grid-template-columns: repeat(4, auto);
     width: 400px;
     height: 400px;
-    border-style: hidden;
-
-
-    
+    border-style: hidden;    
 }
