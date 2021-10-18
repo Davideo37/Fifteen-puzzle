@@ -1,12 +1,18 @@
+//RT Great work, and good code.  But a few small things would improve
+// readability, so see comments below.
+
 /** Main class for my board. Includes all the setup for the board in the constructor,
  *  and adds calls to its methods in the DOM using 'onclick' for each div
- * 
+ *
  */
 class grid {
   constructor(id) {
     this.id = id;
     this.id.appendChild(document.createElement("div")); // Add the 16th 'empty' tile
     this.tiles = id.getElementsByTagName("div");
+
+    //RT This data structure is at the heart of your code, so it deserves a comment
+    // explaining what it means and how it's used.
     this.tileNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     let count = 1;
     for (let tile of this.tiles) { // Go through each div and add an id and onclick method to it.
@@ -52,6 +58,10 @@ class grid {
   /** Function to swap a tile with the blank tile "T16".
    *
    *  It will search the array of tileNums, find where both tiles are, and swap their positions
+//RT Does it rearrange the numbers in tileNums, or swap their <div>s, or swap the <div> contents?
+// Since tileNums wasn't explained, the reader is left to try to puzzle it out.
+// It's not that this method is hard to read, just that the big important concept of your
+// class was never explained.
    *
    * @param {string} id
    */
@@ -96,7 +106,7 @@ class grid {
   }
 
   /** Function to shuffle the board, only making valid moves
-   * 
+   *
    * @param {int} amount - number of moves to make
    */
   async shuffle(amount) {
@@ -107,7 +117,7 @@ class grid {
     }
   }
   /** Function to pause and wait for a specified number of milliseconds
-   * 
+   *
    * @param {int} ms - number of milliseconds
    * @returns - a promise after the specified timeout
    */
@@ -118,17 +128,20 @@ class grid {
 
 
 /** This function was added as a workaround for adding a method to the onclick of each div.
- *  Trying to use a class method in the onclick was incredibly complex and confusing, so I 
+ *  Trying to use a class method in the onclick was incredibly complex and confusing, so I
  *  got advice from Josiah Kangas to use this outside method to call my class methods.
- * 
+ *
  * @param {string} id - the id of the tile clicked on
  */
 function update(id) {
   board.updateBoard(id);
 }
- 
-let board;
+
+let board;  //RT This should be in the onload function.
+            // "let board = new grid(...)"
 window.onload = () => {
+  //RT This could all go in the class constructor, if the class were named game instead of grid.
+  // But it's also fine like it is.
   let button = document.getElementById("shufflebutton");
   board = new grid(document.getElementById("puzzlearea"));
   board.updateBoard("0"); // This is to add the hoverable class to the two necessary tiles 12 and 15 on refresh
